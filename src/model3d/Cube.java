@@ -7,21 +7,21 @@ import java.awt.*;
 public class Cube extends Solid {
 
     public Cube() {
-        this(Color.RED);
+        this(Color.RED, 1, 1);
     }
 
-    public Cube(Color color) {
+    public Cube(Color color,double sizeA, double sizeB) {
         super(color);
 
-        vertexBuffer.add(new Point3D(-1, -1, -1));
-        vertexBuffer.add(new Point3D(1, -1, -1));
-        vertexBuffer.add(new Point3D(1, 1, -1));
-        vertexBuffer.add(new Point3D(-1, 1, -1));
+        vertexBuffer.add(new Point3D(-sizeA, -sizeA, -sizeB));
+        vertexBuffer.add(new Point3D(sizeA, -sizeA, -sizeB));
+        vertexBuffer.add(new Point3D(sizeA, sizeA, -sizeB));
+        vertexBuffer.add(new Point3D(-sizeA, sizeA, -sizeB));
 
-        vertexBuffer.add(new Point3D(-1, -1, 1));
-        vertexBuffer.add(new Point3D(1, -1, 1));
-        vertexBuffer.add(new Point3D(1, 1, 1));
-        vertexBuffer.add(new Point3D(-1, 1, 1));
+        vertexBuffer.add(new Point3D(-sizeA, -sizeA, sizeB));
+        vertexBuffer.add(new Point3D(sizeA, -sizeA, sizeB));
+        vertexBuffer.add(new Point3D(sizeA, sizeA, sizeB));
+        vertexBuffer.add(new Point3D(-sizeA, sizeA, sizeB));
 
         // spodní podstava
         addIndices(0, 1, 1, 2, 2, 3, 3, 0);

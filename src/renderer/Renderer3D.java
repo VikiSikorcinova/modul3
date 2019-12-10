@@ -1,5 +1,6 @@
 package renderer;
 
+import model3d.Axis;
 import model3d.Solid;
 import view.Raster;
 import transforms.Mat4;
@@ -25,14 +26,31 @@ public class Renderer3D extends Renderer implements GPURenderer {
     @Override
     public void draw(Solid... solids) {
         for (Solid solid : solids) {
+            Color color = solid.getColor();
+
             List<Point3D> vb = solid.getVertexBuffer();
             List<Integer> ib = solid.getIndexBuffer();
             for (int i = 0; i < ib.size(); i += 2) {
+                if (solid instanceof Axis) {
+                    switch (i / 2) {
+                        case 0:
+                            color = Color.GREEN;
+                            break;
+
+                        case 1:
+                            color = Color.RED;
+                            break;
+
+                        case 2:
+                            color = Color.BLUE;
+                            break;
+                    }
+                }
                 Integer indexP1 = ib.get(i);
                 Integer indexP2 = ib.get(i + 1);
                 Point3D a = vb.get(indexP1);
                 Point3D b = vb.get(indexP2);
-                transformLine(a, b, solid.getColor());
+                transformLine(a, b, color);
             }
         }
     }
@@ -69,8 +87,8 @@ public class Renderer3D extends Renderer implements GPURenderer {
     }
 
     private Vec3D transformToWindow(Vec3D v) {
-        return v.mul(new Vec3D(1,-1,1))
-                .add(new Vec3D(1,1,0))
+        return v.mul(new Vec3D(1, -1, 1))
+                .add(new Vec3D(1, 1, 0))
                 //to 2f je akoby ((float) 2)
                 .mul(new Vec3D(Raster.WIDTH / 2f, Raster.HEIGHT / 2f, 1));
 
