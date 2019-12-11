@@ -9,6 +9,5 @@ public class Cartesian extends Solid {
     public Cartesian(Color color) {
         super(color);
 
-
             }
         }

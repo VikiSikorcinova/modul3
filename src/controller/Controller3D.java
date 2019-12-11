@@ -29,10 +29,9 @@ public class Controller3D implements Controller {
     private void display() {
         renderer.clear();
 
-//        camera.getViewMatrix()
         renderer.setView(camera.getViewMatrix());
         renderer.setProjection(projection);
-        renderer.setModel(new Mat4Identity());
+        renderer.setModel(model);
         renderer.draw(axis);
         renderer.draw(tree);
         renderer.draw(cartesian);
@@ -153,8 +152,22 @@ public class Controller3D implements Controller {
 
                         break;
                     case KeyEvent.VK_PLUS:
+                        model = model.mul(new Mat4Scale(0.5));
                         break;
                     case KeyEvent.VK_MINUS:
+                        model = model.mul(new Mat4Scale(-0.5));
+                        break;
+                    case KeyEvent.VK_UP:
+                        model = model.mul(new Mat4RotY(0.5));
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        model = model.mul(new Mat4RotY(-0.5));
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        model = model.mul(new Mat4RotZ(0.5));
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        model = model.mul(new Mat4RotZ(-0.5));
                         break;
                 }
                 display();

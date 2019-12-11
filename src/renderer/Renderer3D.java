@@ -2,11 +2,11 @@ package renderer;
 
 import model3d.Axis;
 import model3d.Solid;
-import view.Raster;
 import transforms.Mat4;
 import transforms.Mat4Identity;
 import transforms.Point3D;
 import transforms.Vec3D;
+import view.Raster;
 
 import java.awt.*;
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.Optional;
 
 public class Renderer3D extends Renderer implements GPURenderer {
 
+    boolean axis;
     private Mat4 model, view, projection;
 
     public Renderer3D(Raster raster) {
@@ -26,21 +27,21 @@ public class Renderer3D extends Renderer implements GPURenderer {
     @Override
     public void draw(Solid... solids) {
         for (Solid solid : solids) {
+            axis = false;
             Color color = solid.getColor();
 
             List<Point3D> vb = solid.getVertexBuffer();
             List<Integer> ib = solid.getIndexBuffer();
             for (int i = 0; i < ib.size(); i += 2) {
                 if (solid instanceof Axis) {
+                    axis = true;
                     switch (i / 2) {
                         case 0:
                             color = Color.GREEN;
                             break;
-
                         case 1:
                             color = Color.RED;
                             break;
-
                         case 2:
                             color = Color.BLUE;
                             break;
@@ -56,8 +57,13 @@ public class Renderer3D extends Renderer implements GPURenderer {
     }
 
     private void transformLine(Point3D a, Point3D b, Color color) {
-        a = a.mul(model).mul(view).mul(projection);
-        b = b.mul(model).mul(view).mul(projection);
+        if (axis) {
+            a = a.mul(view).mul(projection);
+            b = b.mul(view).mul(projection);
+        } else {
+            a = a.mul(model).mul(view).mul(projection);
+            b = b.mul(model).mul(view).mul(projection);
+        }
 
         if (clip(a)) return;
         if (clip(b)) return;
@@ -99,9 +105,8 @@ public class Renderer3D extends Renderer implements GPURenderer {
         if (p.getW() < p.getX() || p.getX() < -p.getW()) return true;
         //to iste s Y a Z
         if (p.getW() < p.getY() || p.getY() < -p.getW()) return true;
-        if (p.getW() < p.getZ() || p.getZ() < 0) return true;
+        return p.getW() < p.getZ() || p.getZ() < 0;
         //ak sa neda nic orezat, takze ten bod vidime a mozeme ist dalej
-        return false;
     }
 
     @Override
