@@ -8,6 +8,8 @@ import transforms.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Controller3D implements Controller {
 
@@ -23,7 +25,13 @@ public class Controller3D implements Controller {
     public Controller3D(Raster raster) {
         initObjects(raster);
         initListeners(raster);
-        display();
+        Timer refresher = new Timer();
+        refresher.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                display();
+            }
+        }, 1000/60);
     }
 
     private void display() {
@@ -36,7 +44,7 @@ public class Controller3D implements Controller {
         renderer.draw(tree);
         renderer.draw(cartesian);
 
-
+animation();
     }
 
     @Override
@@ -65,7 +73,7 @@ public class Controller3D implements Controller {
 
         //projection = new Mat4OrthoRH(Raster.WIDTH / 180, Raster.HEIGHT / 180, 0.5, 50);
 
-        tree = new Solid[4];
+        tree = new Solid[5];
         tree[0] = new NPyramid(0.5);
         for (int i = 0; i < tree[0].getVertexBuffer().size(); i++) {
             Point3D p = tree[0].getVertexBuffer().get(i);
@@ -87,6 +95,13 @@ public class Controller3D implements Controller {
         }
         tree[3] = new Cube(Color.BLACK, 0.2, 0.3);
 
+        tree[4] = new Octahedron(0.2);
+        for (int i = 0; i < tree[4].getVertexBuffer().size(); i++) {
+            Point3D p = tree[4].getVertexBuffer().get(i);
+            Point3D nP = p.mul(new Mat4Transl(0, 0, 4.1));
+            tree[4].getVertexBuffer().set(i, nP);
+        }
+
         cartesian = new Cartesian(Color.YELLOW);
 
         axis = new Axis();
@@ -95,6 +110,8 @@ public class Controller3D implements Controller {
             Point3D nP = p.mul(new Mat4Scale(3));
             axis.getVertexBuffer().set(i, nP);
         }
+
+
     }
 
 
@@ -151,11 +168,11 @@ public class Controller3D implements Controller {
                                 50);
 
                         break;
-                    case KeyEvent.VK_PLUS:
+                    case KeyEvent.VK_M:
                         model = model.mul(new Mat4Scale(0.5));
                         break;
-                    case KeyEvent.VK_MINUS:
-                        model = model.mul(new Mat4Scale(-0.5));
+                    case KeyEvent.VK_N:
+                        model = model.mul(new Mat4Scale(1.5));
                         break;
                     case KeyEvent.VK_UP:
                         model = model.mul(new Mat4RotY(0.5));
@@ -169,10 +186,46 @@ public class Controller3D implements Controller {
                     case KeyEvent.VK_RIGHT:
                         model = model.mul(new Mat4RotZ(-0.5));
                         break;
+                    case KeyEvent.VK_I:
+                        model = model.mul(new Mat4Transl(0,1,0));
+                        break;
+                    case KeyEvent.VK_K:
+                        model = model.mul(new Mat4Transl(0,-1,0));
+                        break;
+                    case KeyEvent.VK_L:
+                        model = model.mul(new Mat4Transl(1,0,0));
+                        break;
+                    case KeyEvent.VK_J:
+                        model = model.mul(new Mat4Transl(-1,0,0));
+                        break;
+                    case KeyEvent.VK_R:
+                        animation();
+                        break;
                 }
+
                 display();
             }
         });
+
+    }
+    private void animation() {
+        Timer animation = new Timer();
+
+        animation.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                //Pruchod polem animací
+                    Solid solid = tree[4];
+                    //solid = rotation(solid, "Z", Math.PI / 100);
+                    for (int v = 0; v < solid.getVertexBuffer().size(); v++) {
+                        Point3D point3D = solid.getVertexBuffer().get(v);
+                        Point3D newPoint = point3D.mul(new Mat4RotZ(Math.PI / 100));
+                        solid.getVertexBuffer().set(v, newPoint);
+                    }
+                    tree[4]=solid;
+                }
+        }, 1000/60);
     }
 
 }
