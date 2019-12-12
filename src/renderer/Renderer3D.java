@@ -2,10 +2,7 @@ package renderer;
 
 import model3d.Axis;
 import model3d.Solid;
-import transforms.Mat4;
-import transforms.Mat4Identity;
-import transforms.Point3D;
-import transforms.Vec3D;
+import transforms.*;
 import view.Raster;
 
 import java.awt.*;
@@ -27,9 +24,28 @@ public class Renderer3D extends Renderer implements GPURenderer {
     @Override
     public void draw(Solid... solids) {
         for (Solid solid : solids) {
+
+
+
             axis = false;
             Color color = solid.getColor();
+            if (solid instanceof model3d.Cubic){
+                model3d.Cubic cubic = (model3d.Cubic) solid;
 
+                Point3D a,b;
+                for (Cubic c : cubic.getCubicList()) {
+                    a = c.compute(0);
+                    for (double i = 0.02; i < 1; i+=0.02) {
+                        b=c.compute(i);
+                        transformLine(a,b,color);
+                        a=b;
+                    }
+                    b = c.compute(1);
+                    transformLine(a,b,color);
+                }
+
+                return;
+            }
             List<Point3D> vb = solid.getVertexBuffer();
             List<Integer> ib = solid.getIndexBuffer();
             for (int i = 0; i < ib.size(); i += 2) {

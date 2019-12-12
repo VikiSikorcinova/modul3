@@ -1,6 +1,7 @@
 package controller;
 
 import model3d.*;
+import model3d.Cubic;
 import renderer.GPURenderer;
 import renderer.Renderer3D;
 import view.Raster;
@@ -19,22 +20,17 @@ public class Controller3D implements Controller {
     private Solid[] tree;
     private Solid cartesian;
     private Solid axis;
+    private Solid curve;
     private int camStartX, camStartY;
 
 
     public Controller3D(Raster raster) {
         initObjects(raster);
         initListeners(raster);
-        Timer refresher = new Timer();
-        refresher.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                display();
-            }
-        }, 1000/60);
+
     }
 
-    private void display() {
+    public void display() {
         renderer.clear();
 
         renderer.setView(camera.getViewMatrix());
@@ -43,7 +39,7 @@ public class Controller3D implements Controller {
         renderer.draw(axis);
         renderer.draw(tree);
         renderer.draw(cartesian);
-
+        renderer.draw(curve);
 animation();
     }
 
@@ -75,43 +71,52 @@ animation();
 
         tree = new Solid[5];
         tree[0] = new NPyramid(0.5);
-        for (int i = 0; i < tree[0].getVertexBuffer().size(); i++) {
-            Point3D p = tree[0].getVertexBuffer().get(i);
-            Point3D nP = p.mul(new Mat4Transl(0, 0, 3));
-            tree[0].getVertexBuffer().set(i, nP);
-        }
+        tree[0] = translateMethod(tree[0],0,0,3);
 
         tree[1] = new NPyramid(0.8);
-        for (int i = 0; i < tree[1].getVertexBuffer().size(); i++) {
-            Point3D p = tree[1].getVertexBuffer().get(i);
-            Point3D nP = p.mul(new Mat4Transl(0, 0, 2.3));
-            tree[1].getVertexBuffer().set(i, nP);
-        }
+        tree[1] = translateMethod(tree[1],0,0,2.3);
         tree[2] = new NPyramid(1);
-        for (int i = 0; i < tree[2].getVertexBuffer().size(); i++) {
-            Point3D p = tree[2].getVertexBuffer().get(i);
-            Point3D nP = p.mul(new Mat4Transl(0, 0, 1.3));
-            tree[2].getVertexBuffer().set(i, nP);
-        }
+        tree[2] = translateMethod(tree[2],0,0,1.3);
+
         tree[3] = new Cube(Color.BLACK, 0.2, 0.3);
 
         tree[4] = new Octahedron(0.2);
-        for (int i = 0; i < tree[4].getVertexBuffer().size(); i++) {
-            Point3D p = tree[4].getVertexBuffer().get(i);
-            Point3D nP = p.mul(new Mat4Transl(0, 0, 4.1));
-            tree[4].getVertexBuffer().set(i, nP);
-        }
+        tree[4] = translateMethod(tree[4],0,0,4.1);
+
+
 
         cartesian = new Cartesian(Color.YELLOW);
 
+        curve = new Curve(Color.MAGENTA);
+
         axis = new Axis();
-        for (int i = 0; i < axis.getVertexBuffer().size(); i++) {
-            Point3D p = axis.getVertexBuffer().get(i);
-            Point3D nP = p.mul(new Mat4Scale(3));
-            axis.getVertexBuffer().set(i, nP);
+        axis = scaleMethod(axis, 3);
+
+        Timer refresher = new Timer();
+        refresher.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                display();
+            }
+        }, 1000/60);
+
+    }
+
+    private Solid scaleMethod(Solid s,double scale) {
+        for (int i = 0; i < s.getVertexBuffer().size(); i++) {
+            Point3D p = s.getVertexBuffer().get(i);
+            Point3D nP = p.mul(new Mat4Scale(scale));
+            s.getVertexBuffer().set(i, nP);
         }
-
-
+        return s;
+    }
+    private Solid translateMethod(Solid s,double x,double y, double z) {
+        for (int i = 0; i < s.getVertexBuffer().size(); i++) {
+            Point3D p = s.getVertexBuffer().get(i);
+            Point3D nP = p.mul(new Mat4Transl(x, y, z));
+            s.getVertexBuffer().set(i, nP);
+        }
+        return s;
     }
 
 
