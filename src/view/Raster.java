@@ -8,8 +8,8 @@ import java.util.TimerTask;
 
 public class Raster extends JPanel {
 
-    private final BufferedImage img; // objekt pro zápis pixelů
-    private final Graphics g; // objekt nad kterým jsou k dispozici grafické funkce
+    private final BufferedImage img;
+    private final Graphics g;
     private static final int FPS = 1000 / 30;
 
     public static final int WIDTH = 800;
@@ -17,7 +17,6 @@ public class Raster extends JPanel {
 
     public Raster() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        // inicializace image, nastavení rozměrů (nastavení typu - pro nás nedůležité)
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g = img.getGraphics();
         setLoop();
@@ -28,11 +27,9 @@ public class Raster extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(img, 0, 0, null);
-        // pro zájemce - co dělá observer - https://stackoverflow.com/a/1684476
     }
 
     private void setLoop() {
-        // časovač, který 30 krát za vteřinu obnoví obsah plátna aktuálním img
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {

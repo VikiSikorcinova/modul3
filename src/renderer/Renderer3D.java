@@ -25,27 +25,25 @@ public class Renderer3D extends Renderer implements GPURenderer {
     public void draw(Solid... solids) {
         for (Solid solid : solids) {
 
-
-
             axis = false;
             Color color = solid.getColor();
-            if (solid instanceof model3d.Cubic){
+            if (solid instanceof model3d.Cubic) {
                 model3d.Cubic cubic = (model3d.Cubic) solid;
 
-                Point3D a,b;
+                Point3D a, b;
                 for (Cubic c : cubic.getCubicList()) {
                     a = c.compute(0);
-                    for (double i = 0.02; i < 1; i+=0.02) {
-                        b=c.compute(i);
-                        transformLine(a,b,color);
-                        a=b;
+                    for (double i = 0.02; i < 1; i += 0.02) {
+                        b = c.compute(i);
+                        transformLine(a, b, color);
+                        a = b;
                     }
                     b = c.compute(1);
-                    transformLine(a,b,color);
+                    transformLine(a, b, color);
                 }
-
                 return;
             }
+
             List<Point3D> vb = solid.getVertexBuffer();
             List<Integer> ib = solid.getIndexBuffer();
             for (int i = 0; i < ib.size(); i += 2) {
@@ -63,6 +61,7 @@ public class Renderer3D extends Renderer implements GPURenderer {
                             break;
                     }
                 }
+
                 Integer indexP1 = ib.get(i);
                 Integer indexP2 = ib.get(i + 1);
                 Point3D a = vb.get(indexP1);

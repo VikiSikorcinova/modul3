@@ -8,23 +8,22 @@ public class PGRFWindow extends JFrame {
     private final Raster raster;
 
     public PGRFWindow() {
-        // bez tohoto nastavení se okno zavře, ale aplikace stále běží na pozadí
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("PGRF1 cvičení"); // titulek okna
+        setTitle("PGRF1 cvičení");
 
         raster = new Raster();
         raster.setFocusable(true);
-        raster.grabFocus(); // důležité pro pozdější ovládání z klávesnice
+        raster.grabFocus();
 
         FlowLayout layout = new FlowLayout();
         layout.setVgap(0);
         layout.setHgap(0);
 
         setLayout(layout);
-        add(raster); // vložit plátno do okna
+        add(raster);
         pack();
 
-        setLocationRelativeTo(null); // vycentrovat okno
+        setLocationRelativeTo(null);
     }
 
     public Raster getRaster() {

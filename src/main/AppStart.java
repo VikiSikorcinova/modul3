@@ -1,6 +1,5 @@
 package main;
 
-import controller.Controller2D;
 import controller.Controller3D;
 import view.PGRFWindow;
 
@@ -14,7 +13,5 @@ public class AppStart {
             new Controller3D(window.getRaster());
             window.setVisible(true);
         });
-        // https://www.google.com/search?q=SwingUtilities.invokeLater
-        // https://www.javamex.com/tutorials/threads/invokelater.shtml
     }
 }
